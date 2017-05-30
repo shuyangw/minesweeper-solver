@@ -8,12 +8,12 @@ edges = []
 adjMat = numpy.zeros(shape=(0,0))
 
 def runDebug():
-    cardV, cardE = parseFile("smallgraph", False)
+    cardV, cardE = parseRawFile("nonbip2", False)
     initAdjMat(cardV, cardV)
-    # testMat()
+    testMat()
 
 #Adds edges to edges field, returns cardE and cardV
-def parseFile(filename, zeroIndex):
+def parseRawFile(filename, zeroIndex):
     #Change current working dir to the root folder of bfsengine.py
     currpath = os.path.abspath(__file__)[:-13] #Removes the bfsengine.py part of path string
     os.chdir(currpath)
@@ -21,7 +21,7 @@ def parseFile(filename, zeroIndex):
 
     cardE = 0
     cardV = 0
-
+ 
     #Parses the file, adds edges to edges list
     with open(os.path.join("testfiles", filename), "r") as f:
         for line in f:
@@ -45,3 +45,4 @@ def testMat():
         adjMat[int(edge[0]), int(edge[1])] = True
         adjMat[int(edge[1]), int(edge[0])] = True
     print (adjMat)
+

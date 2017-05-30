@@ -1,4 +1,9 @@
-from func import bfsengine
+from func import adjmattest, screen
 from client import gui
 
-bfsengine.runDebug()
+import os
+
+if __name__ == "__main__":
+	tilepixels, screenpixels = screen.acquireRGBMatrices()
+	print(len(tilepixels))
+	print(len(screenpixels))
