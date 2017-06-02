@@ -7,24 +7,21 @@ import win32con
 import win32ui
 
 import numpy as np
-
 from PIL import Image
 
 #Input: 	String that denotes the name of a file of an png or bmp
 #Output: 	Inserts the RGB values of the image into tilepixels array
-def parse_tile_png(filename):
+def parseTilePng(filename):
 	im = Image.open(filename)
 	tilepixels = np.array(im)
 	return tilepixels
-
-def parse_screen_bmp(filename):
+def parseScreenBmp(filename):
 	im = Image.open(filename)
 	screenpixels = np.array(im)
 	return screenpixels
 
 #Prints the RGB values of the current image, 16 pixels per line
-def print_pixel_rgb(tilep):
-	tilepixels = np.squeeze(np.asarray(tilep))
+def printPixelsRGB():
 	try:
 		for i in range(256):
 			if i % 16 == 0 and i != 0:
@@ -81,10 +78,11 @@ def screenshot(hwnd = None):
 
     #Saves the screen bmp
     myBitMap.SaveBitmapFile(newDC, savecwd)
-    return savecwd	
+    return savecwd
 
-def _setup_window():
+def setupWindow():
 	currenthwndList = get_windows_bytitle("Minesweeper X")
+
 	try:
 		#For some reason, there could be two things that could pop up
 		#for Minesweeper X
@@ -94,38 +92,22 @@ def _setup_window():
 		sys.exit()
 
 	#Sets window to be in front
-	try:
-		win32gui.SetForegroundWindow(hwnd)
-	except:
-		print("Unexpected error, please restart Minesweeper and retry")
-		sys.exit()
+	win32gui.SetForegroundWindow(hwnd)
 
 	#Gets upper left corner and bottom right coordinate
-	#There is an error where sometimes if the window isn't properly set to the foreground,
-	#	the window rectangle will contain unwanted negative coordinates
 	rect = win32gui.GetWindowRect(hwnd)
 
-	#Tests for illegal rects mentioned in the above comment
-	negatives = 0
-	for element in rect:
-		if element < 0:
-			negatives += 1
-	if negatives == 4:
-		print("Unexpected error, please restart Minesweeper retry")
-		sys.exit()
-	return rect
+	#Probably don't need
+	appX = rect[2] - rect[0]
+	appY = rect[3] - rect[1]
 
-def acquire_rgb_matrices():
+	print(appX, appY)
+	print(rect)
+
+def acquireRGBMatrices():
 	os.chdir("func\\testfiles")
-
-	print("Detecting window...")
-	windowrect = _setup_window()
-
-	print("Taking screenshot of screen...")
+	setupWindow()
 	imageDir = screenshot()
-
-	print("Parsing pixels of screen and window...")
-	screenpixels = parse_screen_bmp(imageDir)
-	tilepixels = parse_tile_png("tile.png")
-	
-	return tilepixels, screenpixels, windowrect
+	screenpixels = parseScreenBmp(imageDir)
+	tilepixels = parseTilePng("tile.png")
+	return tilepixels, screenpixels
