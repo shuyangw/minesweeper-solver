@@ -5,9 +5,7 @@ import win32gui
 import win32api
 import win32con
 import win32ui
-
 import numpy as np
-
 from PIL import Image
 
 #Input: 	String that denotes the name of a file of an png or bmp
@@ -65,12 +63,6 @@ def screenshot(hwnd = None):
     myBitMap.CreateCompatibleBitmap(myDC, w, h)
 
     newDC.SelectObject(myBitMap)
-
-    #Throws an error for some reason
-    # try:
-    # 	win32gui.SetForegroundWindow(hwnd)
-    # except:
-    # 	print("Error with line: win32gui.setForegroundWindow(hwnd)")
 
     sleep(.2) 
     newDC.BitBlt((0,0),(w, h) , myDC, (0,0), win32con.SRCCOPY)
