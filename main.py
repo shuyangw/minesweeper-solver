@@ -1,10 +1,14 @@
-from func import screen, setboard
+from func import screen, board
 from client import gui
 from func.structures.boardnode import Node
 from func.draw import Pen
 
+from func import mvengine as mv
+
 import time
 import os
+import wx
+
 
 timemilli = 0
 
@@ -13,18 +17,28 @@ def print_elapsed_time():
 
 if __name__ == "__main__":
 	timemilli = int(round(time.time() * 1000))
-
 	print("Starting...")
 
 	print("Begin Phase 1: Acquiring screen pixels")
 	tilepixels, screenpixels, rect = screen.acquire_rgb_matrices()
+	mv.setup(rect)
+	mv.game_reset()
 	print("End Phase 1")
 
 	print("Begin Phase 2")
-	setboard.setup_board(tilepixels, screenpixels, rect)
-	pen = Pen()
+	x_dim, y_dim, boardStartX, boardStartY= board.setup_board(tilepixels, screenpixels, rect)
+	board = board.reparse()
 
-	print(pen.change_color_by())
-	print(pen.mut_3tuple((255,0,255), 1, 51))
+	print("Begin Phase 3")
+	mv.clickt(0,0, board)
+	mv.clickt(9,9, board)
+
 	print_elapsed_time()
 
+	while(True):
+		inp = input()
+		if inp == "r":
+			print("Reparsing...")
+			board.reparse()
+		if inp == "p":
+			board.print_state()

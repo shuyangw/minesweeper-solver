@@ -1,10 +1,7 @@
 import os
 import sys
 
-import win32gui
-import win32api
-import win32con
-import win32ui
+import win32gui, win32api, win32con, win32ui
 import numpy as np
 from PIL import Image
 
@@ -108,7 +105,7 @@ def _setup_window():
 	return rect
 
 def acquire_rgb_matrices():
-	os.chdir("func\\testfiles")
+	os.chdir("func\\tileimages")
 
 	print("Detecting window...")
 	windowrect = _setup_window()

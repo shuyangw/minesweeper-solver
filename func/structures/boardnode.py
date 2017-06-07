@@ -1,5 +1,6 @@
 import numpy as np
 
 class Node:
-	def __init__(self, data):
-		self.data = data
+	def __init__(self, type, coord):
+		self.type = type
+		self.coord = coord
