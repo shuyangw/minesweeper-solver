@@ -1,6 +1,12 @@
 # minesweeper-solver
 
 ## Changelog
+### 6/7/17
+Added auxiliary images to parse and finished the screen reading portion of the program.
+
+### 6/4/17
+Added class to draw lines, points and crosses.
+
 ### 6/2/17
 Conformed to Python naming conventions. Added additional functionality to search.py so that it determines the number of tiles in the Minesweeper board
 
