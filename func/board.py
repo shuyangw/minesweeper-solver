@@ -188,7 +188,7 @@ def reparse():
 			elif t_type != -2:
 				board[i, j] = Node(t_type, (currX, currY))
 			else:
-				print("Err")				
+				print("Err")
 			currX += 16
 		currY += 16
 	return board
