@@ -40,20 +40,16 @@ pen = None
 #		first loop will be over height, while the second will beover length
 def prelim_setup(blank_tile_pixels, screenpixels, rect): 
 	global pen, blankp, scrp, x_dim, y_dim, boardStartX, boardStartY
-	# global blankp
-	# global scrp
-
 	blankp = blank_tile_pixels
 	scrp = screenpixels
 	pen = Pen()
 
 	#WARNING: blankp and scrp are indexed as [y,x]
 	#Bottom right pixel of screen is: scrp[1079, 1919]
-	appUpX = rect[0]
-	appUpY = rect[1]
+	appUpX = rect[0]-100
+	appUpY = rect[1]-100
 	appBotX = rect[2]
 	appBotY = rect[3]
-
 	countX = 0
 	countY = 0
 	#	O(n^2) naive search
@@ -98,7 +94,7 @@ def determine_board(currY, currX):
 	try:
 		#Checks how many tiles there are across
 		while(True):
-			pen.draw_off_centered_cross(currX, currY)
+			# pen.draw_off_centered_cross(currX, currY)
 			time.sleep(0.01)
 			if confirm_tile(currY, currX) == True:
 				currX += 16
@@ -109,7 +105,7 @@ def determine_board(currY, currX):
 
 		#Checks how many tiles there are up to down
 		while(True):
-			pen.draw_off_centered_cross(currX, currY)
+			# pen.draw_off_centered_cross(currX, currY)
 			time.sleep(0.01)
 			if confirm_tile(currY, currX) == True:
 				currY += 16
@@ -150,7 +146,7 @@ def are_tiles_equal_err(tile1, tile2):
 	flat2 = tile2.flatten()
 	for i in range(256):
 		if flat1[i] != flat2[i]:
-			if(abs(flat1[i]-flat[2]) > 16):
+			if(abs(flat1[i]-flat[2])>16):
 				return False
 	return True
 
@@ -166,7 +162,7 @@ def init_board(x_dim, y_dim):
 		for i in range(x_dim):
 			if i == x_dim or j == y_dim:
 				return
-			board[i,j] = Node(-2, None)
+			board[i,j] = Node(-2, None, None)
 
 #Reparses the minesweeper board to collect new information
 def reparse():
@@ -179,14 +175,14 @@ def reparse():
 		currX = boardStartX
 		for i in range(x_dim):
 			curr_tile = extr_tile(currX, currY)
-			pen.draw_point(i, j)
+			pen.draw_point(currX, currY)
 			t_type = get_tile_type(curr_tile)
 			if t_type == -1:
-				board[i, j] = Node(-1, (currX, currY))
+				board[i, j] = Node(-1, (currX, currY), (i,j))
 			elif t_type == 0:
-				board[i, j] = Node(0, (currX, currY))
+				board[i, j] = Node(0, (currX, currY), (i,j))
 			elif t_type != -2:
-				board[i, j] = Node(t_type, (currX, currY))
+				board[i, j] = Node(t_type, (currX, currY), (i,j))
 			else:
 				print("Err")
 			currX += 16
@@ -235,5 +231,5 @@ def setup_board(blank_tile_pixels, screenpixels, rect):
 	x_dim, y_dim, boardStartX, boardStartY = prelim_setup(blank_tile_pixels, screenpixels, rect)
 	init_board(x_dim, y_dim)
 	acquire_aux_files()
-	mv.move(rect[0] - 10, rect[1] - 10)
+	mv.move(rect[0] - 100, rect[1] - 100)
 	return x_dim, y_dim, boardStartX, boardStartY

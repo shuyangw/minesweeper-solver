@@ -12,10 +12,12 @@ def update_board(brd):
 
 #This is going to take a while
 def solve():
+	#Main body of this method will focus on detecting when to use certain strategies
+	
 	pass
 
 def strat1():
 	pass
 
 def adj(node):
-	
+	pass

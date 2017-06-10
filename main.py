@@ -4,11 +4,11 @@ from func.structures.boardnode import Node
 from func.draw import Pen
 
 from func import mvengine as mv
+from func import command as cmd
 
 import time
 import os
 import wx
-
 
 timemilli = 0
 
@@ -26,19 +26,14 @@ if __name__ == "__main__":
 	print("End Phase 1")
 
 	print("Begin Phase 2")
-	x_dim, y_dim, boardStartX, boardStartY= board.setup_board(tilepixels, screenpixels, rect)
+	x_dim, y_dim, boardStartX, boardStartY = board.setup_board(tilepixels, screenpixels, rect)
 	board = board.reparse()
 
 	print("Begin Phase 3")
-	mv.clickt(0,0, board)
-	mv.clickt(9,9, board)
+	# print(board[5,5].scr_coord[0]+3)
+	# mv.clickt(0,0, board)
+	# mv.clickt(9,9, board)
 
 	print_elapsed_time()
 
-	while(True):
-		inp = input()
-		if inp == "r":
-			print("Reparsing...")
-			board.reparse()
-		if inp == "p":
-			board.print_state()
+	# cmd.on()

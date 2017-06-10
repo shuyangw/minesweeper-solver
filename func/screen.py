@@ -64,13 +64,19 @@ def screenshot(hwnd = None):
     sleep(.2) 
     newDC.BitBlt((0,0),(w, h) , myDC, (0,0), win32con.SRCCOPY)
     myBitMap.Paint(newDC)
-
     #Save directory for screen bmp in tmp in tmp folder
     savecwd = os.getcwd()[:-15]+"\\tmp\\screen.bmp"
 
     #Saves the screen bmp
-    myBitMap.SaveBitmapFile(newDC, savecwd)
+    result = False
+    while not result:
+    	try:
+    		myBitMap.SaveBitmapFile(newDC, savecwd)
+    		result = True
+    	except:
+    		pass
     return savecwd	
+
 
 def _setup_window():
 	currenthwndList = get_windows_bytitle("Minesweeper X")

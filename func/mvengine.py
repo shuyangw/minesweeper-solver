@@ -16,10 +16,10 @@ def click(x, y):
 
 #Clicks the tile associated with the board data structure position
 def clickt(x, y, board):
-	click(board[x,y].coord[0]+3, board[x,y].coord[1]+3) #Off set by +3 for more accuracy
+	click(board[x,y].scr_coord[0]+3, board[x,y].scr_coord[1]+3) #Off set by +3 for more accuracy
 
 def movet(x, y, board):
-	move(board[x,y].coord[0]+3, board[x,y].coord[1]+3)	#Off set by +3 for more accuracy
+	move(board[x,y].scr_coord[0]+3, board[x,y].scr_coord[1]+3)	#Off set by +3 for more accuracy
 
 #Moves the mouse to the specified coordinate of the screen
 def move(x, y):
