@@ -15,6 +15,10 @@ board = None
 #Dimensions of the board
 x_dim = 0
 y_dim = 0
+appUpX = 0
+appUpY = 0
+appBotX = 0
+appBotY = 0
 
 #Start coordinates of the playing board
 boardStartX = 0
@@ -26,9 +30,14 @@ blankp = None
 
 #Found blank tile
 found_blank_tile = None
-
 #Array of every tile
 tilearr = []
+#Flag tile
+ftile = None
+#Red bomb
+rbomb = None
+#Normal bomb
+bomb = None
 
 #Pen to draw things with
 pen = None
@@ -40,14 +49,15 @@ pen = None
 #		first loop will be over height, while the second will beover length
 def prelim_setup(blank_tile_pixels, screenpixels, rect): 
 	global pen, blankp, scrp, x_dim, y_dim, boardStartX, boardStartY
+	global appUpX, appUpY, appBotX, appBotY
 	blankp = blank_tile_pixels
-	scrp = screenpixels
+	scrp = sc.parse_screen_bmp(sc.screenshot())
 	pen = Pen()
 
 	#WARNING: blankp and scrp are indexed as [y,x]
 	#Bottom right pixel of screen is: scrp[1079, 1919]
-	appUpX = rect[0]-100
-	appUpY = rect[1]-100
+	appUpX = rect[0]
+	appUpY = rect[1]
 	appBotX = rect[2]
 	appBotY = rect[3]
 	countX = 0
@@ -61,7 +71,6 @@ def prelim_setup(blank_tile_pixels, screenpixels, rect):
 					print("Detected tile\nDetermining board...")
 					countX, countY = determine_board(y, x)
 					num_tiles = countX * countY
-					pen.clear()
 					print("Number of tiles : " +str(num_tiles))
 					break
 		#Executes if inner loop is ended normally
@@ -96,6 +105,7 @@ def determine_board(currY, currX):
 		while(True):
 			# pen.draw_off_centered_cross(currX, currY)
 			time.sleep(0.01)
+
 			if confirm_tile(currY, currX) == True:
 				currX += 16
 				countX += 1
@@ -107,6 +117,7 @@ def determine_board(currY, currX):
 		while(True):
 			# pen.draw_off_centered_cross(currX, currY)
 			time.sleep(0.01)
+
 			if confirm_tile(currY, currX) == True:
 				currY += 16
 				countY += 1
@@ -132,27 +143,17 @@ def are_pixels_equal(p1, p2):
 	return True
 
 #Determines if two tiles given as 16x16 numpy matrices are equal
-def are_tiles_equal(tile1, tile2):
+def are_tiles_equal(tile1, tile2, dim):
 	flat1 = tile1.flatten()
 	flat2 = tile2.flatten()
-	for i in range(256):
+	for i in range(dim**2):
 		if flat1[i] != flat2[i]:
 			return False
 	return True
 
-#Same as are_tiles_equal but leaves a +- 16 valuess of error
-def are_tiles_equal_err(tile1, tile2):
-	flat1 = tile1.flatten()
-	flat2 = tile2.flatten()
-	for i in range(256):
-		if flat1[i] != flat2[i]:
-			if(abs(flat1[i]-flat[2])>16):
-				return False
-	return True
-
 #Extracts the tile rooted at the screen coordinates (x,y)
-def extr_tile(x, y):
-	return scrp[y:y+16,x:x+16]	
+def extr_tile(x, y, dim):
+	return scrp[y:y+dim,x:x+dim]	
 
 #Initializes the board data structure with an arbitrary node
 def init_board(x_dim, y_dim):
@@ -174,8 +175,7 @@ def reparse():
 	for j in range(y_dim):
 		currX = boardStartX
 		for i in range(x_dim):
-			curr_tile = extr_tile(currX, currY)
-			pen.draw_point(currX, currY)
+			curr_tile = extr_tile(currX, currY, 16)
 			t_type = get_tile_type(curr_tile)
 			if t_type == -1:
 				board[i, j] = Node(-1, (currX, currY), (i,j))
@@ -184,13 +184,13 @@ def reparse():
 			elif t_type != -2:
 				board[i, j] = Node(t_type, (currX, currY), (i,j))
 			else:
-				print("Err")
+				print("Unknown tile detected at ("+str(i)+","+str(j)+")")
 			currX += 16
 		currY += 16
 	return board
 
 def acquire_aux_files():
-	global found_blank_tile, tilearr
+	global found_blank_tile, tilearr, ftile, rbomb, bomb
 	found_blank_tile = sc.parse_tile_png("b.png")
 	tilearr.append(sc.parse_tile_png("1.png"))
 	tilearr.append(sc.parse_tile_png("2.png"))
@@ -200,6 +200,10 @@ def acquire_aux_files():
 	tilearr.append(sc.parse_tile_png("6.png"))
 	tilearr.append(sc.parse_tile_png("7.png"))
 	tilearr.append(sc.parse_tile_png("8.png"))
+	ftile = sc.parse_tile_png("f.png")
+	rbomb = sc.parse_tile_png("rbomb.png")
+	bomb = sc.parse_tile_png("bomb.png")
+
 
 #Prints the state of the board, the data associated with it and their coordinates
 def print_state():
@@ -217,15 +221,36 @@ def print_state():
 #	the number of the tile if it's a numbered tile
 #   -2 if there is an error 
 def get_tile_type(tile):
-	if are_tiles_equal(tile, blankp):
+	if are_tiles_equal(tile, blankp, 16):
 		return -1
-	elif are_tiles_equal(tile, found_blank_tile):
+	elif are_tiles_equal(tile, found_blank_tile, 16):
 		return 0
+	elif are_tiles_equal(tile, ftile, 16):
+		return "f"
+	elif are_tiles_equal(tile, rbomb, 16):
+		return "rb"
+	elif are_tiles_equal(tile, bomb, 16):
+		return "b"
 	else:
 		for i in range(1,9):
-			if are_tiles_equal(tile, tilearr[i-1]):
+			if are_tiles_equal(tile, tilearr[i-1], 16):
 				return i
 	return -2
+
+def find_conditions():
+	global board
+	board = reparse()
+	blank_count = 0
+	for j in range(y_dim):
+		for i in range(x_dim):
+			if board[i, j].type == "rb":
+				return "loss"
+			elif board[i, j].type == -1:
+				blank_count += 1
+	if blank_count == 0:
+		return "win"
+	else:
+		return "in progress"
 
 def setup_board(blank_tile_pixels, screenpixels, rect):
 	x_dim, y_dim, boardStartX, boardStartY = prelim_setup(blank_tile_pixels, screenpixels, rect)

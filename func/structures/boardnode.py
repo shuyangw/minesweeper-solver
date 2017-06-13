@@ -1,6 +1,6 @@
 import numpy as np
 
-#Structure to support a 2x2 board
+#Structure to support a board
 class Node:
 	#Constructor:
 	#	Type of node, i.e. -1 for unexplored, 0 for empty and explored and

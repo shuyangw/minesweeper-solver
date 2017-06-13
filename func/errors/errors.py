@@ -4,3 +4,6 @@ class Error(Exception):
 
 class IllegalColorError(Error):
 	pass
+
+class EmptyBoardError(Error):
+	pass

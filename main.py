@@ -1,10 +1,12 @@
-from func import screen, board
+from func import screen
 from client import gui
 from func.structures.boardnode import Node
 from func.draw import Pen
 
 from func import mvengine as mv
 from func import command as cmd
+from func import solver as sol
+from func import board as bd
 
 import time
 import os
@@ -26,8 +28,8 @@ if __name__ == "__main__":
 	print("End Phase 1")
 
 	print("Begin Phase 2")
-	x_dim, y_dim, boardStartX, boardStartY = board.setup_board(tilepixels, screenpixels, rect)
-	board = board.reparse()
+	x_dim, y_dim, boardStartX, boardStartY = bd.setup_board(tilepixels, screenpixels, rect)
+	board = bd.reparse()
 
 	print("Begin Phase 3")
 	# print(board[5,5].scr_coord[0]+3)
@@ -35,5 +37,7 @@ if __name__ == "__main__":
 	# mv.clickt(9,9, board)
 
 	print_elapsed_time()
+	sol.update_board(x_dim, y_dim)
+	cmd.on()
 
-	# cmd.on()
+	

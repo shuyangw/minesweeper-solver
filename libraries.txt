@@ -1,0 +1,4 @@
+Pillow
+numpy
+pywin //Can't install on Linux for some reason or I forgot idkw	
+wx
