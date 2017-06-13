@@ -1,7 +1,7 @@
 # minesweeper-solver
 
 ## Changelog
-###
+### 6/13/17
 Completed first working build. Can sometimes solve beginner boards with no usage of probabilistic methods, i.e. no guessing.
 
 ### 6/10/17
