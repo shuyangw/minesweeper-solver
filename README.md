@@ -1,6 +1,15 @@
 # minesweeper-solver
 
 ## Changelog
+###
+Completed first working build. Can sometimes solve beginner boards with no usage of probabilistic methods, i.e. no guessing.
+
+### 6/10/17
+Fixed issue where creating a screenshot will throw unwanted exceptions.
+
+### 6/8/17
+Started work on the solving mechanism. Cleaned up some stuff.
+
 ### 6/7/17
 Added auxiliary images to parse and finished the screen reading portion of the program.
 
