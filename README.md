@@ -1,4 +1,6 @@
 # minesweeper-solver
+## About
+Given a specific graphical implementation of the game (not owned by me and available in the repo for download), this application will parse the pixels of game and perform a series of (so far) non-probabilistic steps towards victory until the board is complete or a guess must be made.
 
 ## Changelog
 ### 6/13/17
